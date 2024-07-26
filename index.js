@@ -12,10 +12,10 @@ const client = new Client({
 
 var currentYear = new Date().getFullYear();
 var nextYear = currentYear + 1;
-// list of birthdays in the format "MM/DD/YYYY"
+// list of birthday(s) in the format "MM/DD/YYYY, 12:00:00 AM"
 var birthdayList = [];
 
-// list of Discord User IDs
+// list of Discord user ID(s)
 const discordUserList = [];
 
 function updateBirthdayYears() {
@@ -32,7 +32,7 @@ function updateBirthdayYears() {
 }
 updateBirthdayYears();
 
-// Discord channel id to send birthday messages
+// Discord channel ID to send birthday messages
 const channelId = "";
 
 client.on("ready", (message) => {
@@ -59,8 +59,11 @@ client.on("ready", (message) => {
 client.on("messageCreate", (message) => {
   if (message.author.bot) return;
 
-  if (message.content.toLowerCase() === "hello") {
-    message.reply("hello");
+  if (message.content.toLowerCase().includes("hello")) {
+    let option1 = "hello";
+    let option2 = "안녕하세요";
+    let chosen_option = Math.random() < 0.5 ? option1 : option2;
+    message.reply(chosen_option);
   }
 
   if (message.content.toLowerCase() === "!uptime") {
