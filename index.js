@@ -10,49 +10,59 @@ const client = new Client({
   ],
 });
 
-var currentYear = new Date().getFullYear();
-var nextYear = currentYear + 1;
-// list of birthday(s) in the format "MM/DD/YYYY, 12:00:00 AM"
-var birthdayList = [];
+// edit
+const channelId = "";
 
-// list of Discord user ID(s)
-const discordUserList = [];
+const currentYear = new Date().getFullYear();
+const nextYear = currentYear + 1;
+
+// edit
+const birthdayData = [                       
+  { date: "01/1/2024, 12:00:00 AM", userId: "" },
+];
+
+let startTime;
 
 function updateBirthdayYears() {
-  var now = new Date();
-  for (let i = 0; i < birthdayList.length; i++) {
-    var birthday = new Date(birthdayList[i]);
-    if (now.getFullYear() == birthday.getFullYear()) {
+  const now = new Date();
+  birthdayData.forEach((birthdayObj) => {
+    let birthday = new Date(birthdayObj.date);
+
+    // Check if the birthday has already occurred this year
+    if (now.getFullYear() === birthday.getFullYear()) {
       if (now.getTime() > birthday.getTime()) {
+        // Move birthday to next year
         birthday.setFullYear(nextYear);
-        birthdayList[i] = birthday.toLocaleString();
+        birthdayObj.date = birthday.toLocaleString();
       }
     }
-  }
+  });
 }
-updateBirthdayYears();
 
-// Discord channel ID to send birthday messages
-const channelId = "";
+// Update birthday years initially
+updateBirthdayYears();
+console.log(birthdayData);
 
 client.on("ready", (message) => {
   console.log(`Logged in as ${message.user.tag}`);
 
   const channel = client.channels.cache.get(channelId);
-  setInterval(function () {
-    var now = new Date();
-    for (let i = 0; i < birthdayList.length; i++) {
-      var birthday = new Date(birthdayList[i]);
+
+  // Check birthdays every 10 seconds
+  setInterval(() => {
+    const now = new Date();
+    birthdayData.forEach((birthdayObj) => {
+      let birthday = new Date(birthdayObj.date);
       if (now.getTime() > birthday.getTime()) {
         channel
-          .send(`Happy birthday <@${discordUserList[i]}> 🎉`)
+          .send(`Happy birthday <@${birthdayObj.userId}> 🎉`)
           .catch(console.error);
         birthday.setFullYear(nextYear);
-        birthdayList[i] = birthday.toLocaleString();
-        console.log(birthdayList[i]);
+        birthdayObj.date = birthday.toLocaleString();
       }
-    }
+    });
   }, 10000);
+
   startTime = Date.now();
 });
 
@@ -60,10 +70,10 @@ client.on("messageCreate", (message) => {
   if (message.author.bot) return;
 
   if (message.content.toLowerCase().includes("hello")) {
-    let option1 = "hello";
-    let option2 = "안녕하세요";
-    let chosen_option = Math.random() < 0.5 ? option1 : option2;
-    message.reply(chosen_option);
+    const greetings = ["hello", "안녕하세요"];
+    const chosenGreeting =
+      greetings[Math.floor(Math.random() * greetings.length)];
+    message.reply(chosenGreeting);
   }
 
   if (message.content.toLowerCase() === "!uptime") {
