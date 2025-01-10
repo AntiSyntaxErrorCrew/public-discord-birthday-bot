@@ -22,8 +22,8 @@ const nextYear = currentYear + 1;
 async function connectDB() {
   try {
     await mongoClient.connect();
-    const db = mongoClient.db("personal");
-    const collection = db.collection("discord-birthdays");
+    const db = mongoClient.db(""); // your mongodb database name
+    const collection = db.collection(""); // your mongodb collection name
     return collection;
   } catch (error) {
     console.error("error connecting to mongodb:", error);
